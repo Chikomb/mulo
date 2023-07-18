@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\UssdInbox;
+use App\Models\CallBackReturn;
+use App\Models\RegisterComplaint;
 use App\Models\UssdSessions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -60,14 +62,21 @@ class UssdSessionsController extends Controller
                         // Update the session record
                         $update_session = UssdSessions::where('session_id', $session_id)->update([
                             "case_no" => 1,
-                            "step_no" => 2
+                            "step_no" => 1
                         ]);
                     }
                     break;
                 case '1': // About Us
-                    if ($case_no == 1 && $step_no == 2) {
+                    if ($case_no == 1 && $step_no == 1 && !empty($last_part) && is_numeric($last_part)&& !empty($last_part) && is_numeric($last_part) && !empty($last_part) && is_numeric($last_part) ) { 
                         // Retrieve and display ZICTA's information
-                        $message_string = "ZICTA (Zambia Information and Communications Technology Authority) is the regulatory body for the ICT sector in Zambia. We promote the development, provision, and use of reliable and affordable ICT services. Press 0 to return to the main menu.";
+                        if($last_part== 1)
+                        $message_string = "1.ZICTA (Zambia Information and Communications Technology Authority) is the regulatory body for the ICT sector in Zambia. We promote the development, provision, and use of reliable and affordable ICT services. Press 0 to return to the main menu.";
+                        elseif($last_part== 2)
+                        $message_string = "Thank you for requesting a call back. We will contact you shortly. Press 0 to return to the main menu.";
+                        elseif($last_part== 3)
+                        $message_string = "To get a license, please follow these steps:\n Step 1. Get an application form.\n Step 2. Submit a soft and physical copy.\n Step 3. If all is well you will be issued payment fees.\n Step 4. Make payments according to the given time period.\n Press 0 to return to the main menu.";
+                        elseif($last_part== 4)
+                        $message_string = "Thank you for registering your complaint. We will look into it. Press 0 to return to the main menu.";
                         $request_type = "2";
                         $update_session = UssdSessions::where('session_id', $session_id)->update([
                             "case_no" => 2,
@@ -76,7 +85,7 @@ class UssdSessionsController extends Controller
                     }
                     break;
                 case '2': // Request Call Back
-                    if ($case_no == 2 && $step_no == 1 && !empty($last_part) && is_numeric($last_part)) {
+                    if ($case_no == 2 && $step_no == 1 && !empty($last_part) && is_numeric($last_part)&& !empty($last_part) && is_numeric($last_part) && !empty($last_part) && is_numeric($last_part)) {
                         // Validate and process the user's input for requesting a call back
                         $mobileNumber = $last_part;
 
@@ -84,7 +93,7 @@ class UssdSessionsController extends Controller
 
                         // Store the request in the database or take necessary actions
                         // For example:
-                        $callbackRequest = CallBackRequest::create([
+                        $callbackRequest = CallBackReturn::create([
                             'mobile_number' => $mobileNumber,
                             'session_id' => $session_id
                         ]);
@@ -96,8 +105,8 @@ class UssdSessionsController extends Controller
 
                         // Update the session record
                         $update_session = UssdSessions::where('session_id', $session_id)->update([
-                            "case_no" => 2,
-                            "step_no" => 2
+                            "case_no" => 3,
+                            "step_no" => 1
                         ]);
                     }
                     break;
@@ -151,7 +160,7 @@ class UssdSessionsController extends Controller
                         if (!empty($last_part)) {
                             // Store the complaint in the database or take necessary actions
                             // For example:
-                            $complaint = Complaint::create([
+                            $complaint = RegisterComplaint::create([
                                 'description' => $last_part,
                                 'session_id' => $session_id
                             ]);

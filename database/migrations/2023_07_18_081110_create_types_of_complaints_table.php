@@ -11,8 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('call_back_requests', function (Blueprint $table) {
+        Schema::create('types_of_complaints', function (Blueprint $table) {
             $table->id();
+            $table->string('complaint_type');
+            $table->text('complaint_description');
             $table->timestamps();
         });
     }
@@ -22,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('call_back_requests');
+        Schema::dropIfExists('types_of_complaints');
     }
 };
